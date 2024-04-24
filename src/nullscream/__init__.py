@@ -10,6 +10,9 @@ class NoopLoader(abc.Loader):
     """
     Loader that creates noop stand-in modules.
     """
+    def __init__(self, function_blacklist=None):
+        self.function_blacklist = function_blacklist or []
+
     def create_module(self, spec):
         return types.ModuleType(spec.name)
 
@@ -23,25 +26,28 @@ class NoopLoader(abc.Loader):
             "__dir__": NoopClass(),
         })
 
+        # Override blacklisted functions
+        for func_name in self.function_blacklist:
+            if func_name in module.__dict__:
+                module.__dict__[func_name] = NoopClass()
+
 class NoopFinder(importlib.abc.MetaPathFinder):
-    def __init__(self, blacklist=None, whitelist=None):
+    def __init__(self, blacklist=None, whitelist=None, function_blacklist=None):
         self.blacklist = blacklist or []
         self.whitelist = whitelist or []
+        self.function_blacklist = function_blacklist or []
 
     def find_spec(self, fullname, path, target=None):
         root = fullname.split('.')[0]
 
-        if (
-            (
-                fullname in self.blacklist and fullname not in self.whitelist
-            )
-        ):
-            return importlib.machinery.ModuleSpec(fullname, NoopLoader())
+        if root in self.blacklist:
+            if fullname not in self.whitelist:
+                return importlib.machinery.ModuleSpec(fullname, NoopLoader(self.function_blacklist))
         return None
 
 
-def activate(blacklist=None, whitelist=None):
-    sys.meta_path.insert(0, NoopFinder(blacklist, whitelist))
+def activate(blacklist=None, whitelist=None, function_blacklist=None):
+    sys.meta_path.insert(0, NoopFinder(blacklist, whitelist, function_blacklist))
 
 
 def deactivate(blacklist=None):
