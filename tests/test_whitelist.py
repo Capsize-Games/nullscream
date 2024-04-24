@@ -1,11 +1,11 @@
 import unittest
 
-from nullscream import install_nullscream, uninstall_nullscream
+import nullscream
 
 
 class TestWhitelist(unittest.TestCase):
     def test_whitelist_noop(self):
-        install_nullscream(whitelist=["math"], blacklist=["requests"])
+        nullscream.activate(whitelist=["math"], blacklist=["requests"])
         import requests
         self.assertTrue(requests.__doc__ == "This is a noop stand-in module.")
         self.assertTrue(hasattr(requests, "path"))
@@ -16,7 +16,7 @@ class TestWhitelist(unittest.TestCase):
         self.assertFalse(hasattr(math, "asdf"))
 
     def tearDown(self):
-        uninstall_nullscream(blacklist=["requests"])
+        nullscream.deactivate(blacklist=["requests"])
 
 
 if __name__ == "__main__":

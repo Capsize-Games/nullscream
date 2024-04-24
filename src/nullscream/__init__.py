@@ -40,11 +40,11 @@ class NoopFinder(importlib.abc.MetaPathFinder):
         return None
 
 
-def install_nullscream(blacklist=None, whitelist=None):
+def activate(blacklist=None, whitelist=None):
     sys.meta_path.insert(0, NoopFinder(blacklist, whitelist))
 
 
-def uninstall_nullscream(blacklist=None):
+def deactivate(blacklist=None):
     sys.meta_path = [finder for finder in sys.meta_path if not isinstance(finder, NoopFinder)]
     if blacklist:
         for module_name in blacklist:
