@@ -11,6 +11,8 @@ import noop functions and classes that you can use as drop in replacements for f
 
 This allows anything on the blacklist to be importable, but not executable.
 
+---
+
 ## Installation
 
 ```bash
@@ -22,17 +24,14 @@ pip install nullscream
 Import the `install_nullscream` function the top of your main entry file (e.g. `main.py`), import `nullscream` before 
 importing any other libraries.
 
-```python
-from nullscream import install_nullscream
-```
-
-Specify what you would like to blacklist
 
 ```python
-install_nullscream(
-    blacklist=[
-        "requests"
-    ]
+import nullscream
+
+nullscream_blacklist = ["requests"]
+
+nullscream.activate(
+    blacklist=nullscream_blacklist,
 )
 ```
 
@@ -55,10 +54,9 @@ print(requests.foobar())
 You can uninstall the noop module by calling `uninstall_nullscream`
 
 ```python
-from nullscream import uninstall_nullscream
-uninstall_nullscream(
-    blacklist=["requests"]
-)
+import nullscream
+
+nullscream.uninstall(blacklist=["requests"])
 ```
 
 Now when you import requests, you will get the original requests library.
