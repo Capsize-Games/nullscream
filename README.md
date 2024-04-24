@@ -4,6 +4,8 @@
 
 ![img.png](img.png)
 
+[![Upload Python Package](https://github.com/Capsize-Games/nullscream/actions/workflows/python-publish.yml/badge.svg)](https://github.com/Capsize-Games/nullscream/actions/workflows/python-publish.yml)
+
 ---
 
 `nullscream` is a simple library that allows you to
