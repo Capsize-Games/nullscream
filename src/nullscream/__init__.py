@@ -1,3 +1,4 @@
+import logging
 import types
 import sys
 import importlib.machinery
@@ -37,12 +38,22 @@ class NoopFinder(importlib.abc.MetaPathFinder):
         self.whitelist = whitelist or []
         self.function_blacklist = function_blacklist or []
 
+        # Create a logger for this class
+        self.logger = logging.getLogger(__name__)
+
     def find_spec(self, fullname, path, target=None):
         root = fullname.split('.')[0]
+        if (
+            (root in self.blacklist and fullname not in self.whitelist)
+            or fullname in self.blacklist
+        ):
+            # Log the blocked module
+            self.logger.info(f"nullscream_block {fullname}")
 
-        if root in self.blacklist:
-            if fullname not in self.whitelist:
-                return importlib.machinery.ModuleSpec(fullname, NoopLoader(self.function_blacklist))
+            return importlib.machinery.ModuleSpec(fullname, NoopLoader(self.function_blacklist))
+        else:
+            # Log the allowed module
+            self.logger.info(f"nullscream_allow {fullname}")
         return None
 
 
