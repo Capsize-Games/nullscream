@@ -2,6 +2,7 @@ from nullscream.noop_function import noop
 
 
 class MagicType:
+
     def __getattr__(self, name):
         return MagicType()
 
@@ -16,6 +17,9 @@ class MagicType:
 
     def __iter__(self):
         return iter([])
+
+    def __mro_entries__(self, bases):
+        return (MagicType,)  # Ensure it returns a tuple
 
 
 class NoopClass:
