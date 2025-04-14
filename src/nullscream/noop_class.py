@@ -14,6 +14,9 @@ class MagicType:
     def __fspath__(self):
         return ""
 
+    def __iter__(self):
+        return iter([])
+
 
 class NoopClass:
     def __init__(self, *args, **kwargs):
@@ -27,4 +30,3 @@ class NoopClass:
 
     def __setattr__(self, key, value):
         pass
-
